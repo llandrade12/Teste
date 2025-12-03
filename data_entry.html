@@ -1,0 +1,947 @@
+ <!DOCTYPE html> 
+  <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ficha Financeira - ESPARTANO">
+    <title>Ficha Financeira - ESPARTANO</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --border: rgba(255, 255, 255, 0.05);
+        --muted: #94a3b8;
+        --white: #f1f5f9;
+        --accent: #0ea5a4;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--white);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+      }
+
+      .wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: var(--bg);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app-header {
+        background: linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+        border-bottom: 1px solid var(--border);
+        padding: 20px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        box-shadow: var(--shadow-md);
+      }
+
+      .title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--accent), #06b6a4);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #042c2e;
+        font-size: 1.1rem;
+      }
+
+      .app-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .subtitle {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        background: linear-gradient(90deg, var(--accent), #0d9488);
+        color: #042c2e;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition);
+        font-family: inherit;
+      }
+
+      button:hover {
+        background: linear-gradient(90deg, #0d9488, #14b8a6);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      main {
+        flex: 1;
+        padding: 22px;
+        overflow-y: auto;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0;
+      }
+
+      .tab-button {
+        background: transparent;
+        color: var(--muted);
+        padding: 12px 16px;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        border-radius: 0;
+      }
+
+      .tab-button.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+        background: transparent;
+      }
+
+      .tab-button:hover {
+        color: var(--white);
+        background: transparent;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .form-section {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.01));
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 20px;
+      }
+
+      .form-section h2 {
+        margin: 0 0 20px 0;
+        color: var(--accent);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .form-row.full {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group label {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: var(--card);
+        color: var(--white);
+        border: 1px solid var(--border);
+        font-size: 0.95rem;
+        transition: var(--transition);
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: 2px solid rgba(14, 165, 164, 0.12);
+        border-color: rgba(14, 165, 164, 0.3);
+        background: rgba(17, 24, 39, 0.8);
+      }
+
+      .form-group input:hover,
+      .form-group textarea:hover {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .photo-upload {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .photo-preview {
+        width: 100%;
+        max-width: 200px;
+        height: 200px;
+        border-radius: 8px;
+        border: 2px dashed var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      /* Drag and Drop Styles */
+      .photo-preview.drag-over {
+        border-color: var(--accent);
+        background: rgba(14, 165, 164, 0.15);
+        box-shadow: 0 0 20px rgba(14, 165, 164, 0.3);
+      }
+
+      .photo-preview:hover {
+        border-color: var(--accent);
+        background: rgba(14, 165, 164, 0.05);
+      }
+
+      .photo-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .photo-preview.empty {
+        color: var(--muted);
+        font-size: 2rem;
+      }
+
+      .photo-preview.empty::after {
+        content: 'Arraste uma foto aqui ou clique para selecionar';
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        font-size: 0.75rem;
+        text-align: center;
+        color: var(--muted);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .photo-preview.empty:hover::after {
+        opacity: 1;
+      }
+
+      #photoInput {
+        display: none;
+      }
+
+      .ficha-preview {
+        background: var(--white);
+        color: #000;
+        border-radius: 12px;
+        padding: 40px;
+        margin-top: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      .ficha-header {
+        text-align: center;
+        margin-bottom: 35px;
+        border-bottom: 4px solid var(--accent);
+        padding-bottom: 20px;
+      }
+
+      .ficha-header h1 {
+        margin: 0;
+        color: var(--accent);
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .ficha-header p {
+        margin: 8px 0 0 0;
+        color: #666;
+        font-size: 0.95rem;
+      }
+
+      .ficha-content {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 35px;
+        align-items: start;
+      }
+
+      .ficha-photo {
+        display: flex;
+        justify-content: center;
+      }
+
+      .ficha-photo img {
+        width: 220px;
+        height: 280px;
+        border-radius: 12px;
+        border: 3px solid var(--accent);
+        object-fit: cover;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .ficha-photo.empty {
+        width: 220px;
+        height: 280px;
+        background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
+        border-radius: 12px;
+        border: 3px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #999;
+        font-size: 3rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .ficha-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px 30px;
+      }
+
+      .ficha-field {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #e5e5e5;
+        padding-bottom: 15px;
+      }
+
+      .ficha-field label {
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+
+      .ficha-field value {
+        color: #333;
+        font-size: 1.05rem;
+        word-break: break-word;
+        font-weight: 500;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 0.9rem;
+        color: var(--white);
+      }
+
+      .data-table thead th {
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .data-table tbody td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        vertical-align: middle;
+      }
+
+      .data-table tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.012);
+      }
+
+      .data-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .btn-delete {
+        background: var(--danger);
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        color: white;
+      }
+
+      .btn-delete:hover {
+        background: #dc2626;
+      }
+
+      .btn-edit {
+        background: var(--warning);
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        color: #000;
+        margin-right: 6px;
+      }
+
+      .btn-edit:hover {
+        background: #d97706;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        background: linear-gradient(90deg, var(--success), #059669);
+        color: #042c2e;
+        flex: 1;
+        justify-content: center;
+        min-width: 150px;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(90deg, #059669, #047857);
+      }
+
+      .btn-secondary {
+        background: var(--accent);
+        color: #042c2e;
+        flex: 1;
+        justify-content: center;
+        min-width: 150px;
+      }
+
+      .btn-secondary:hover {
+        background: #0d9488;
+      }
+
+      .btn-danger {
+        background: var(--danger);
+        color: white;
+        flex: 1;
+        justify-content: center;
+        min-width: 150px;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .success-message {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        display: none;
+        font-size: 0.9rem;
+        animation: slideIn 0.3s ease-in-out;
+      }
+
+      .success-message.show {
+        display: block;
+      }
+
+      .error-message {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        display: none;
+        font-size: 0.9rem;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .empty-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.01);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-value {
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 1.3rem;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: var(--card);
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 600px;
+        width: 90%;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .modal-header h2 {
+        margin: 0;
+        color: var(--accent);
+      }
+
+      .modal-close {
+        background: transparent;
+        color: var(--muted);
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: auto;
+        height: auto;
+      }
+
+      .modal-close:hover {
+        color: var(--white);
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .app-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header-actions {
+          width: 100%;
+        }
+
+        .header-actions button {
+          flex: 1;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .ficha-content {
+          grid-template-columns: 1fr;
+        }
+
+        .ficha-fields {
+          grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+          flex: 1;
+        }
+
+        .data-table {
+          font-size: 0.8rem;
+        }
+
+        .data-table thead th,
+        .data-table tbody td {
+          padding: 8px;
+        }
+
+        .ficha-preview {
+          padding: 20px;
+        }
+
+        .ficha-photo img,
+        .ficha-photo.empty {
+          width: 100%;
+          max-width: 200px;
+          height: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="app-header">
+        <div class="title">
+          <div class="logo">ES</div>
+          <div>
+            <h1>Ficha Financeira</h1>
+            <div class="subtitle">Gerenciamento de Clientes</div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button title="Salvar progresso localmente" onclick="salvarLocal()">
+            <i class="fa-solid fa-save"></i> Salvar Local
+          </button>
+          <button title="Voltar" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <div class="tabs">
+          <button class="tab-button active" onclick="abrirAba(event, 'nova')">
+            <i class="fa-solid fa-plus"></i> Nova Ficha
+          </button>
+          <button class="tab-button" onclick="abrirAba(event, 'lote')">
+            <i class="fa-solid fa-paste"></i> Colar em Lote
+          </button>
+          <button class="tab-button" onclick="abrirAba(event, 'listagem')">
+            <i class="fa-solid fa-list"></i> Minhas Fichas
+          </button>
+        </div>
+
+        <!-- ABA: NOVA FICHA -->
+        <div id="nova" class="tab-content active">
+          <div class="form-section">
+            <h2><i class="fa-solid fa-file-invoice"></i> Nova Ficha Financeira</h2>
+
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" placeholder="Digite o nome completo">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cpf">CPF</label>
+                <input type="text" id="cpf" placeholder="000.000.000-00">
+              </div>
+              <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="text" id="telefone" placeholder="(00) 00000-0000">
+              </div>
+            </div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label for="referencia">Nome e Telefone de Referência</label>
+                <input type="text" id="referencia" placeholder="Nome - (00) 00000-0000">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="placa">Placa do Carro</label>
+                <input type="text" id="placa" placeholder="ABC-1234">
+              </div>
+              <div class="form-group">
+                <label for="modeloCor">Modelo e Cor</label>
+                <input type="text" id="modeloCor" placeholder="Honda Civic - Preto">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="valorAprovado">Valor Aprovado (R$)</label>
+                <input type="number" id="valorAprovado" placeholder="0.00" step="0.01">
+              </div>
+              <div class="form-group">
+                <label for="chavePix">Chave Pix</label>
+                <input type="text" id="chavePix" placeholder="CPF, Email ou Telefone">
+              </div>
+            </div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Foto do Cliente</label>
+                <div class="photo-upload">
+                  <div class="photo-preview empty" id="photoPreview" onclick="document.getElementById('photoInput').click()">
+                    <i class="fa-solid fa-image"></i>
+                  </div>
+                  <input type="file" id="photoInput" accept="image/*" onchange="carregarFoto(event)">
+                  <button type="button" class="btn-secondary" onclick="document.getElementById('photoInput').click()">
+                    <i class="fa-solid fa-upload"></i> Selecionar Foto
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn-primary" onclick="adicionarFicha()">
+                <i class="fa-solid fa-plus"></i> Adicionar Ficha
+              </button>
+              <button class="btn-secondary" onclick="salvarFichaIndividualPDF()">
+                <i class="fa-solid fa-file-pdf"></i> Salvar PDF
+              </button>
+              <button class="btn-secondary" onclick="salvarFichaIndividualJPEG()">
+                <i class="fa-solid fa-image"></i> Baixar JPEG
+              </button>
+              <button class="btn-danger" onclick="limparFormulario()">
+                <i class="fa-solid fa-trash"></i> Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="lote" class="tab-content">
+          <div class="form-section">
+            <h2><i class="fa-solid fa-paste"></i> Colar Dados em Lote</h2>
+
+            <div class="success-message" id="successLote"></div>
+            <div class="error-message" id="errorLote"></div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label for="textareaLote">Cole aqui os dados (um cliente por linha, separados por |)</label>
+                <textarea id="textareaLote" placeholder="Nome|CPF|Telefone|Referência|Placa|Modelo e Cor|Valor|Chave Pix&#10;João Silva|123.456.789-00|(11) 98765-4321|Maria - (11) 99999-9999|ABC-1234|Honda Civic - Preto|5000.00|joao@email.com"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label>Formato esperado:</label>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">
+                  <strong>Nome | CPF | Telefone | Referência | Placa | Modelo e Cor | Valor Aprovado | Chave Pix</strong><br>
+                  Cada cliente em uma linha, separado por pipe (|)
+                </p>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn-primary" onclick="processarLote()">
+                <i class="fa-solid fa-check"></i> Processar Lote
+              </button>
+              <button class="btn-secondary" onclick="limparLote()">
+                <i class="fa-solid fa-trash"></i> Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="listagem" class="tab-content">
+          <div class="form-section">
+            <h2><i class="fa-solid fa-list"></i> Minhas Fichas</h2>
+
+            <div class="stats-row" id="statsRow" style="display: none;">
+              <div class="stat-item">
+                <div class="stat-label">Total de Fichas</div>
+                <div class="stat-value" id="totalFichas">0</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Valor Total</div>
+                <div class="stat-value" id="valorTotal">R$ 0,00</div>
+              </div>
+            </div>
+
+            <table class="data-table" id="tabelaFichas">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>Placa</th>
+                  <th>Valor</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaBody">
+                <tr>
+                  <td colspan="6" class="empty-message">Nenhuma ficha cadastrada. Comece adicionando uma nova ficha.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="action-buttons">
+              <button class="btn-primary" onclick="exportarTodosPDF()">
+                <i class="fa-solid fa-file-pdf"></i> Exportar Todos em PDF
+              </button>
+              <button class="btn-secondary" onclick="exportarCSV()">
+                <i class="fa-solid fa-file-csv"></i> Exportar CSV
+              </button>
+              <button class="btn-danger" onclick="limparTodas()">
+                <i class="fa-solid fa-trash"></i> Limpar Todas
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="modalFicha" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Visualizar Ficha</h2>
+          <button class="modal-close" onclick="fecharModal()">×</button>
+        </div>
+        <div id="fichaPreviewContent"></div>
+        <div class="action-buttons">
+          <button class="btn-primary" onclick="salvarFichaPDF()">
+            <i class="fa-solid fa-file-pdf"></i> Salvar em PDF
+          </button>
+          <button class="btn-secondary" onclick="salvarFichaJPEG()">
+            <i class="fa-solid fa-image"></i> Baixar JPEG
+          </button>
+          <button class="btn-secondary" onclick="salvarNoDrive()">
+            <i class="fa-solid fa-cloud"></i> Salvar no Drive
+          </button>
+          <button class="btn-danger" onclick="fecharModal()">
+            <i class="fa-solid fa-times"></i> Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="FICHA.JS"></script>
+    <script src="drag-drop.js"></script>
+   <script src="login.js"></script>
+<script>
+    checkPermission(['cadastro']); 
+</script>
+
+
+
+  </body>
+  </html>
