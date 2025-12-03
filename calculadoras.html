@@ -28,6 +28,8 @@
 </header>
 
 <main>
+
+<!-- ======================== CALCULADORA DE MULTAS ======================== -->
 <section class="panel main-panel">
   <h2><i class="fa-solid fa-calculator"></i> Calculadora de Multas</h2>
 
@@ -39,6 +41,9 @@
   <div class="card" id="resultadoMulta">R$ 0,00</div>
 </section>
 
+
+
+<!-- ======================== CALCULADORA DOBRAS ======================== -->
 <section class="panel main-panel">
   <h2><i class="fa-solid fa-money-bill-wave"></i> Calculadora Dobras / Pagamento</h2>
 
@@ -50,16 +55,22 @@
   <h3>Total:</h3>
   <div class="card" id="resultadoDobras">R$ 0,00</div>
 </section>
+
 </main>
 </div>
 
 <script>
-// ------------- CALCULADORA DE MULTAS -------------
+/* ============================================================
+   CALCULADORA DE MULTAS — CORRIGIDA
+   Agora ela captura valores mesmo com textos / símbolos no meio
+   Ex: ❌ 50 / ❌ valor: 130,40 / ❌ total = 240.75
+   ============================================================ */
 function calcularMulta() {
   const texto = document.getElementById("entradaMulta").value;
 
-  // Captura apenas valores que aparecem imediatamente depois de ❌
-  const regex = /❌+ *(\d+[.,]?\d*)/g;
+  // Nova regex corrigida: pega o número mesmo se houver texto após ❌
+  const regex = /❌[^0-9]*([\d.,]+)/g;
+
   let match;
   let total = 0;
 
@@ -73,7 +84,10 @@ function calcularMulta() {
 }
 
 
-// ------------- CALCULADORA DOBRAS / PAGAMENTO -------------
+
+/* ============================================================
+   CALCULADORA DE DOBRAS / PAGAMENTO
+   ============================================================ */
 function calcularDobras() {
   const texto = document.getElementById("entradaDobras").value;
   const diaria = parseFloat(document.getElementById("valorDiaria2").value) || 0;
@@ -86,20 +100,15 @@ function calcularDobras() {
     const qtdCheck = (linha.match(/✅/g) || []).length;
 
     if (qtdVerde > 0) {
-      total += 20;                
+      total += 20; // Tem 🟩 → adiciona 20
     } else if (qtdCheck >= 2) {
-      total += diaria;            
-    } else {
+      total += diaria; // Linha com 2 ou mais check marca diária
     }
   });
 
   document.getElementById("resultadoDobras").textContent =
     total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
-// Chamada de permissão
-checkPermission(['conciliacao', 'admin']);
-</script>
-
 
 </script>
 
